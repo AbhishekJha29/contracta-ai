@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth/config';
 import { listUserRepos } from '@/lib/github/listRepos';
 import { prisma } from '@/lib/db/client';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const session = await auth();
 

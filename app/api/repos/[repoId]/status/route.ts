@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/config';
 import { prisma } from '@/lib/db/client';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/repos/[repoId]/status - Returns the latest analysis baseline status for polling
  */

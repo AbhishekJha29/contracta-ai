@@ -4,6 +4,8 @@ import { prisma } from '@/lib/db/client';
 import { enqueueAnalysis } from '@/lib/queue/analyzeQueue';
 import { checkRateLimit } from '@/lib/ratelimit/checkRateLimit';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/repos/[repoId]/analyze - Enqueues a repository analysis job in the BullMQ queue
  */

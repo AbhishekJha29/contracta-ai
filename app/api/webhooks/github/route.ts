@@ -44,6 +44,8 @@ function verifyGitHubSignature(
   }
 }
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/webhooks/github - Handles incoming GitHub webhook push events
  */

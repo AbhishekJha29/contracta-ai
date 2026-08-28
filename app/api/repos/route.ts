@@ -4,6 +4,8 @@ import { prisma } from '@/lib/db/client';
 import { getUserOctokit } from '@/lib/github/userOctokit';
 import { registerWebhookForRepo } from '@/lib/github/registerWebhook';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/repos - Returns all repositories connected by the authenticated user and usage stats
  */
