@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(cuid())
+  githubId       String         @unique
+  githubUsername String
+  email          String?
+  accessToken    String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  installations  Installation[]
+}
+
+model Installation {
+  id                   String   @id @default(cuid())
+  githubInstallationId String   @unique
+  userId               String
+  createdAt            DateTime @default(now())
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repos                Repo[]
+}
+
+model Repo {
+  id             String        @id @default(cuid())
+  installationId String
+  githubRepoId   String
+  owner          String
+  name           String
+  defaultBranch  String        @default("main")
+  webhookId      Int?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  baselines      Baseline[]
+  driftReports   DriftReport[]
+  installation   Installation  @relation(fields: [installationId], references: [id], onDelete: Cascade)
+
+  @@unique([installationId, githubRepoId])
+}
+
+model Baseline {
+  id        String   @id @default(cuid())
+  repoId    String
+  specJson  Json
+  version   Int
+  createdAt DateTime @default(now())
+  repo      Repo     @relation(fields: [repoId], references: [id], onDelete: Cascade)
+}
+
+model DriftReport {
+  id              String        @id @default(cuid())
+  repoId          String
+  baselineVersion Int
+  diffJson        Json
+  severity        DriftSeverity
+  githubIssueUrl  String?
+  createdAt       DateTime      @default(now())
+  repo            Repo          @relation(fields: [repoId], references: [id], onDelete: Cascade)
+}
+
+enum DriftSeverity {
+  breaking
+  clean
+}
