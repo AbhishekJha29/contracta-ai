@@ -11,7 +11,8 @@
     "contracta:check": "tsx lib/cli/check.ts",
     "contracta:baseline": "tsx lib/cli/baseline.ts",
     "test:db": "tsx lib/db/test-db.ts",
-    "worker": "tsx scripts/worker.ts"
+    "worker": "tsx scripts/worker.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
