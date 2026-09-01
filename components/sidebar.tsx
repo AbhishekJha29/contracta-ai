@@ -18,6 +18,7 @@ import {
   LogOut,
   Flame,
   CheckCircle2,
+  Settings,
 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { mockRepo } from '@/lib/mock-data';
@@ -224,7 +225,17 @@ export function Sidebar({ repoId = 'demo' }: SidebarProps) {
       ) : null}
 
       {/* Footer Navigation & User Account */}
-      <div className="p-3 border-t border-zinc-800/80 space-y-2">
+      <div className="p-3 border-t border-zinc-800/80 space-y-1.5">
+        <Link
+          href="/settings"
+          className="flex items-center justify-between px-2.5 py-1.5 text-xs text-zinc-400 hover:text-amber-300 hover:bg-zinc-900 rounded-md transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            <Settings className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Settings & GitHub</span>
+          </span>
+          <ArrowUpRight className="w-3.5 h-3.5 text-zinc-500" />
+        </Link>
         <Link
           href="/"
           className="flex items-center justify-between px-2.5 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 rounded-md transition-colors"

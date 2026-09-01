@@ -25,10 +25,14 @@ export async function GET() {
 
   const accessToken = user?.accessToken || session.accessToken;
 
-  if (!accessToken) {
+  if (!accessToken || !user?.githubId) {
     return NextResponse.json(
-      { error: 'GitHub OAuth access token not found. Please sign out and sign in again to refresh permissions.' },
-      { status: 403 }
+      {
+        error: 'github_not_connected',
+        message: 'GitHub account is not connected. Please connect your GitHub account in Settings to view and import repositories.',
+        repos: [],
+      },
+      { status: 200 }
     );
   }
 

@@ -18,10 +18,9 @@ export async function GET() {
   const user = await prisma.user.findFirst({
     where: {
       OR: [
-        ...(session.user.id ? [{ githubId: session.user.id }, { id: session.user.id }] : []),
-        ...(session.user.githubUsername ? [{ githubUsername: session.user.githubUsername }] : []),
+        ...(session.user.id ? [{ id: session.user.id }] : []),
         ...(session.user.email ? [{ email: session.user.email }] : []),
-        ...(session.user.name ? [{ githubUsername: session.user.name }] : []),
+        ...(session.user.id ? [{ githubId: session.user.id }] : []),
       ],
     },
     include: {
@@ -131,10 +130,9 @@ export async function POST(request: NextRequest) {
     let user = await prisma.user.findFirst({
       where: {
         OR: [
-          ...(session.user.id ? [{ githubId: session.user.id }, { id: session.user.id }] : []),
-          ...(session.user.githubUsername ? [{ githubUsername: session.user.githubUsername }] : []),
+          ...(session.user.id ? [{ id: session.user.id }] : []),
           ...(session.user.email ? [{ email: session.user.email }] : []),
-          ...(session.user.name ? [{ githubUsername: session.user.name }] : []),
+          ...(session.user.id ? [{ githubId: session.user.id }] : []),
         ],
       },
     });
@@ -142,9 +140,10 @@ export async function POST(request: NextRequest) {
     if (!user) {
       user = await prisma.user.create({
         data: {
-          githubId: session.user.id || `gh-${Date.now()}`,
-          githubUsername: session.user.githubUsername || session.user.name || 'github-user',
+          id: session.user.id || undefined,
           email: session.user.email || null,
+          githubId: session.user.githubId || null,
+          githubUsername: session.user.githubUsername || null,
           accessToken: session.accessToken || null,
         },
       });

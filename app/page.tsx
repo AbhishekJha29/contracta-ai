@@ -35,6 +35,10 @@ import {
   Cpu,
   Radio,
   ExternalLink,
+  Mail,
+  KeyRound,
+  Settings,
+  AlertCircle,
 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { GitHubRepoSummary } from '@/lib/github/listRepos';
@@ -118,6 +122,7 @@ export default function LandingPage() {
   const [selectedRepoId, setSelectedRepoId] = useState<number | string>('');
   const [repoSearch, setRepoSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
+
 
   // Live Terminal interactive animation step index
   const [visibleStepCount, setVisibleStepCount] = useState(PIPELINE_STEPS.length);
@@ -278,27 +283,27 @@ export default function LandingPage() {
           )}
 
           {/* Auth State Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {isAuthLoading ? (
               <div className="h-8 w-24 bg-zinc-900 border border-zinc-800 animate-pulse rounded-lg" />
             ) : isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-900/80 border border-zinc-800">
-                  {session.user?.image ? (
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name || 'User'}
-                      width={20}
-                      height={20}
-                      className="rounded-full ring-1 ring-amber-500/40"
-                    />
-                  ) : (
-                    <UserIcon className="w-3.5 h-3.5 text-zinc-400" />
-                  )}
-                  <span className="text-xs font-mono text-zinc-200 hidden sm:inline-block max-w-[120px] truncate">
-                    {session.user?.name || session.user?.email || 'Authenticated'}
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/settings"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 transition-colors"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-xs font-mono text-zinc-200 hidden sm:inline-block max-w-[140px] truncate">
+                    {session.user?.email || session.user?.name || 'Account'}
                   </span>
-                </div>
+                </Link>
+                <Link
+                  href="/settings"
+                  className="p-1.5 text-zinc-400 hover:text-amber-300 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 rounded-lg transition-colors"
+                  title="Settings & GitHub Connection"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </Link>
                 <button
                   type="button"
                   onClick={() => signOut({ callbackUrl: '/' })}
@@ -310,14 +315,22 @@ export default function LandingPage() {
                 </button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => signIn('github')}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono font-semibold text-zinc-950 bg-amber-400 hover:bg-amber-300 border border-amber-300 rounded-lg transition-all shadow-md shadow-amber-500/20 cursor-pointer"
-              >
-                <FaGithub className="w-3.5 h-3.5" />
-                <span>Sign in with GitHub</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/signin"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-zinc-300 hover:text-white bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg transition-colors"
+                >
+                  <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Sign in</span>
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-mono font-semibold text-zinc-950 bg-amber-400 hover:bg-amber-300 border border-amber-300 rounded-lg transition-all shadow-md shadow-amber-500/20 cursor-pointer"
+                >
+                  <span>Get Started</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
             )}
           </div>
         </div>
@@ -389,6 +402,32 @@ export default function LandingPage() {
                 <div className="text-2xl font-bold text-rose-300 font-mono">{stats.breakingRepos}</div>
               </div>
             </div>
+
+            {/* GitHub Connection Status Callout if not connected */}
+            {!session?.user?.githubId && (
+              <div className="p-6 rounded-2xl bg-zinc-900/80 border border-amber-500/30 shadow-xl space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                      <FaGithub className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-bold text-white font-sans">GitHub Account Not Linked</h2>
+                      <p className="text-xs text-zinc-400 font-mono mt-0.5">
+                        Connect your GitHub account in Settings to import Express repositories and activate continuous AST contract surveillance.
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/settings"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-xs font-mono font-semibold text-zinc-950 bg-amber-400 hover:bg-amber-300 border border-amber-300 rounded-xl transition-all shadow-md shadow-amber-500/20 self-start sm:self-auto shrink-0"
+                  >
+                    <Settings className="w-3.5 h-3.5" />
+                    <span>Connect in Settings &rarr;</span>
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Connect Repository Form */}
             <form
@@ -564,30 +603,39 @@ export default function LandingPage() {
                 Contracta statically inspects Express & TypeScript route definitions, compiles living OpenAPI contracts directly from your source AST, and halts breaking API drift before it reaches production.
               </p>
 
-              {/* CTA Action Bar */}
+              {/* Hero Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => signIn('github')}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-3 cursor-pointer group"
+                <Link
+                  href="/signup"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-mono font-bold uppercase tracking-wider text-zinc-950 bg-amber-400 hover:bg-amber-300 border border-amber-300 rounded-xl transition-all shadow-lg shadow-amber-500/20 cursor-pointer"
                 >
-                  <FaGithub className="w-4 h-4 text-zinc-950" />
-                  <span>Connect GitHub Repository</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </button>
+                  <span>Start Free API Monitoring</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
 
                 <Link
-                  href="/contract/demo"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-mono text-xs font-medium transition-colors flex items-center justify-center gap-2"
+                  href="/signin"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-mono font-semibold text-zinc-300 hover:text-white bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-all"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Explore Demo Sandbox &rarr;</span>
+                  <KeyRound className="w-4 h-4 text-amber-400" />
+                  <span>Sign In</span>
                 </Link>
               </div>
 
-              {/* Trust Badge */}
-              <div className="pt-2 text-[11px] font-mono text-zinc-500">
-                <span>⚡ Ephemeral AST Processing • No Code Stored Permanently • OAuth 2.0</span>
+              {/* Demo Sandbox Link & Trust Badge */}
+              <div className="space-y-2 pt-2">
+                <div>
+                  <Link
+                    href="/contract/demo"
+                    className="text-xs font-mono text-zinc-400 hover:text-amber-400 transition-colors inline-flex items-center gap-1.5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Explore interactive Demo Sandbox without signing in &rarr;</span>
+                  </Link>
+                </div>
+                <div className="text-[11px] font-mono text-zinc-500">
+                  <span>⚡ Ephemeral AST Processing • Password Hashing via bcrypt • Optional GitHub Link</span>
+                </div>
               </div>
             </section>
 
@@ -1338,15 +1386,22 @@ export default function LandingPage() {
                 </div>
 
                 <div className="pt-2 space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => signIn('github')}
-                    className="w-full py-3.5 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xl shadow-amber-500/25 flex items-center justify-center gap-3 cursor-pointer"
-                  >
-                    <FaGithub className="w-4 h-4 text-zinc-950" />
-                    <span>Sign in with GitHub to Connect</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <Link
+                      href="/signup"
+                      className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>Create Free Account</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/signin"
+                      className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-zinc-200 hover:text-white font-mono text-xs font-semibold border border-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <KeyRound className="w-4 h-4 text-amber-400" />
+                      <span>Sign In</span>
+                    </Link>
+                  </div>
 
                   <p className="text-[11px] font-mono text-zinc-500 leading-relaxed px-4">
                     🔒 We only read the repositories you choose to connect. Source code is analyzed inside isolated ephemeral worker memory and is never permanently stored on our servers.

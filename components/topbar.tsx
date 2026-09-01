@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   Flame,
   CheckCircle2,
+  Settings,
 } from 'lucide-react';
 import { mockRepo } from '@/lib/mock-data';
 
@@ -81,7 +82,15 @@ export function Topbar({ currentSection, repoId = 'demo' }: TopbarProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2">
+        <Link
+          href="/settings"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 rounded-md transition-colors"
+          title="Account Settings & GitHub Connection"
+        >
+          <Settings className="w-3.5 h-3.5 text-zinc-400" />
+          <span className="hidden sm:inline">Settings</span>
+        </Link>
         <a
           href={githubUrl}
           target="_blank"

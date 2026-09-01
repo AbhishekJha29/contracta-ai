@@ -71,9 +71,9 @@ export async function POST(
     const dbUser = await prisma.user.findFirst({
       where: {
         OR: [
-          ...(session.user.id ? [{ githubId: session.user.id }, { id: session.user.id }] : []),
+          ...(session.user.id ? [{ id: session.user.id }] : []),
           ...(session.user.email ? [{ email: session.user.email }] : []),
-          ...(session.user.githubUsername ? [{ githubUsername: session.user.githubUsername }] : []),
+          ...(session.user.id ? [{ githubId: session.user.id }] : []),
         ],
       },
     });
@@ -82,7 +82,7 @@ export async function POST(
 
   if (!accessToken) {
     return NextResponse.json(
-      { error: 'GitHub OAuth access token not found. Please sign out and sign in again to refresh permissions.' },
+      { error: 'GitHub account is not connected or access token is missing. Please connect your GitHub account in Settings.' },
       { status: 403 }
     );
   }
